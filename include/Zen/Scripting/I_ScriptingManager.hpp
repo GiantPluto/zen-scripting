@@ -49,8 +49,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptingManager();
-    virtual ~I_ScriptingManager();
+             I_ScriptingManager() = default;
+    virtual ~I_ScriptingManager() = default;
     /// @}
 
 };  // interface I_ScriptingManager

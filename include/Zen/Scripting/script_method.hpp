@@ -27,7 +27,7 @@ class script_method
     /// @name I_ScriptMethod implementation
     /// @{
 public:
-    virtual boost::any dispatch(pObjectReference_type _pObjectReference, std::vector<boost::any>& _arguments);
+    virtual boost::any dispatch(pScriptWrapper_type _pScriptWrapper, std::vector<boost::any>& _arguments);
     /// @}
 
     /// @name 'Structors
@@ -62,7 +62,7 @@ script_method<ScriptableClass_type, Method_type, Return_type, DispatchHelper_typ
 template<typename ScriptableClass_type, class Method_type, typename Return_type, class DispatchHelper_type>
 inline
 boost::any
-script_method<ScriptableClass_type, Method_type, Return_type, DispatchHelper_type>::dispatch(I_ObjectReference* _pObject, std::vector<boost::any>& _parms)
+script_method<ScriptableClass_type, Method_type, Return_type, DispatchHelper_type>::dispatch(I_ScriptWrapper* _pObject, std::vector<boost::any>& _parms)
 {
     assert(_pObject != NULL);
 

@@ -18,29 +18,29 @@
 namespace Zen {
 namespace Scripting {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-class I_ObjectReference;
+class I_ScriptWrapper;
 
 class SCRIPTING_DLL_LINK I_ScriptMethod
 {
     /// @name Types
     /// @{
 public:
-    typedef I_ObjectReference*                                          pObjectReference_type;
+    typedef I_ScriptWrapper*                                          pScriptWrapper_type;
     /// @}
 
     /// @name I_ScriptMethod interface
     /// @{
 public:
     /// Dispatch the method.
-    virtual boost::any dispatch(pObjectReference_type _pObjectReference, std::vector<boost::any>& _arguments) = 0;
+    virtual boost::any dispatch(pScriptWrapper_type _pScriptWrapper, std::vector<boost::any>& _arguments) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptMethod();
+             I_ScriptMethod() = default;
 public:
-    virtual ~I_ScriptMethod();
+    virtual ~I_ScriptMethod() = default;
     /// @}
 
 };  // interface I_ScriptMethod

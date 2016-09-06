@@ -20,7 +20,7 @@
 namespace Zen {
 namespace Scripting {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-class I_ObjectReference;
+class I_ScriptWrapper;
 class I_ScriptMethod;
 class I_ScriptModule;
 
@@ -34,22 +34,22 @@ public:
     typedef Zen::Event::Event<wpScriptType_type>        scriptTypeEvent_type;
     typedef std::shared_ptr<I_ScriptModule>             pScriptModule_type;
 
-    typedef I_ObjectReference*                          pObjectReference_type;
+    typedef I_ScriptWrapper*                          pScriptWrapper_type;
 
-    typedef void(*void_function_no_args_type)(pObjectReference_type);
-    typedef void(*void_function_args_type)(pObjectReference_type, std::vector<boost::any>);
+    typedef void(*void_function_no_args_type)(pScriptWrapper_type);
+    typedef void(*void_function_args_type)(pScriptWrapper_type, std::vector<boost::any>);
 
-    typedef pObjectReference_type(*object_function_no_args_type)(pObjectReference_type);
-    typedef pObjectReference_type(*object_function_args_type)(pObjectReference_type, std::vector<boost::any>);
+    typedef pScriptWrapper_type(*object_function_no_args_type)(pScriptWrapper_type);
+    typedef pScriptWrapper_type(*object_function_args_type)(pScriptWrapper_type, std::vector<boost::any>);
 
-    typedef std::string(*string_function_no_args_type)(pObjectReference_type);
-    typedef std::string(*string_function_args_type)(pObjectReference_type, std::vector<boost::any>);
+    typedef std::string(*string_function_no_args_type)(pScriptWrapper_type);
+    typedef std::string(*string_function_args_type)(pScriptWrapper_type, std::vector<boost::any>);
 
-    typedef bool(*bool_function_no_args_type)(pObjectReference_type);
-    typedef bool(*bool_function_args_type)(pObjectReference_type, std::vector<boost::any>);
+    typedef bool(*bool_function_no_args_type)(pScriptWrapper_type);
+    typedef bool(*bool_function_args_type)(pScriptWrapper_type, std::vector<boost::any>);
 
-    typedef int(*int_function_no_args_type)(pObjectReference_type);
-    typedef int(*int_function_args_type)(pObjectReference_type, std::vector<boost::any>);
+    typedef int(*int_function_no_args_type)(pScriptWrapper_type);
+    typedef int(*int_function_args_type)(pScriptWrapper_type, std::vector<boost::any>);
     /// @}
 
     /// @name I_ScriptType interface
@@ -70,10 +70,10 @@ public:
     /// Add a method to this type that takes arguments and returns void
     virtual void addMethod(const std::string& _name, const std::string& _docString, void_function_args_type _function) = 0;
 
-    /// Add a method to this type that takes no arguments and returns an I_ObjectReference
+    /// Add a method to this type that takes no arguments and returns an I_ScriptWrapper
     virtual void addMethod(const std::string& _name, const std::string& _docString, object_function_no_args_type _function) = 0;
 
-    /// Add a method to this type that takes arguments and returns an I_ObjectReference
+    /// Add a method to this type that takes arguments and returns an I_ScriptWrapper
     virtual void addMethod(const std::string& _name, const std::string& _docString, object_function_args_type _function) = 0;
 
     /// Add a method to this type that takes no arguments and returns a std::string
@@ -111,8 +111,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptType();
-    virtual ~I_ScriptType();
+             I_ScriptType() = default;
+    virtual ~I_ScriptType() = default;
     /// @}
 
 };  // interface I_ScriptType

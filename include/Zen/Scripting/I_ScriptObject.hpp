@@ -43,8 +43,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptObject();
-    virtual ~I_ScriptObject();
+             I_ScriptObject() = default;
+    virtual ~I_ScriptObject() = default;
     /// @}
 };  // interface I_ScriptObject
 

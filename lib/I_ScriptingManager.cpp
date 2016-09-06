@@ -21,7 +21,7 @@
 //
 //  Tony Richards trichards@indiezen.com
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-#include "../I_ScriptingManager.hpp"
+#include <Zen/Scripting/I_ScriptingManager.hpp>
 
 #include "ScriptingManager.hpp"
 

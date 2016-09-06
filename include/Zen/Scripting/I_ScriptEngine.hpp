@@ -9,7 +9,8 @@
 
 #include "Configuration.hpp"
 
-#include <Zen/Core/Event/Event.hpp>
+// Events aren't implemented in 2.0 yet
+//#include <Zen/Core/Event/Event.hpp>
 
 #include <boost/any.hpp>
 
@@ -32,7 +33,7 @@ public:
     typedef std::string                            index_type;
     typedef std::shared_ptr<I_ScriptEngine>        pScriptEngine_type;
     typedef std::weak_ptr<I_ScriptEngine>          wpScriptEngine_type;
-    typedef Zen::Event::Event<wpScriptEngine_type> scriptEngineEvent_type;
+    // typedef Zen::Event::Event<wpScriptEngine_type> scriptEngineEvent_type;
 
     typedef std::shared_ptr<I_ScriptModule>        pScriptModule_type;
     /// @}
@@ -65,14 +66,14 @@ public:
     /// @name Events
     /// @{
 public:
-    scriptEngineEvent_type  onDestroyEvent;
+    // scriptEngineEvent_type  onDestroyEvent;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptEngine();
-    virtual ~I_ScriptEngine();
+             I_ScriptEngine() = default;
+    virtual ~I_ScriptEngine() = default;
     /// @}
 
 };  // interface I_ScriptEngine

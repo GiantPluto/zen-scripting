@@ -45,8 +45,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptableService();
-    virtual ~I_ScriptableService();
+             I_ScriptableService() = default;
+    virtual ~I_ScriptableService() = default;
     /// @}
 
 };  // interface I_ScriptableService

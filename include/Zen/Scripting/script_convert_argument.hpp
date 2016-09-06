@@ -86,15 +86,15 @@ struct script_convert_argument<Argument_type, true, false, false, true>
             typename boost::remove_reference<Argument_type>::type
         >::type base_type;
 
-    typedef typename base_type::ScriptObjectReference_type*          pScriptObjectReference_type;
+    typedef typename base_type::ScriptScriptWrapper_type*          pScriptScriptWrapper_type;
     inline
     void
     operator()(boost::any& _parm)
     {
         // Scriptable objects passed as an argument to a method are passed
-        // as I_ObjectReference*.  Get this value and save it for later use.
-        m_pValue = dynamic_cast<pScriptObjectReference_type>
-            (boost::any_cast<I_ObjectReference*>(_parm));
+        // as I_ScriptWrapper*.  Get this value and save it for later use.
+        m_pValue = dynamic_cast<pScriptScriptWrapper_type>
+            (boost::any_cast<I_ScriptWrapper*>(_parm));
     }
 
     inline base_type* getObject(base_type* _pObject)
@@ -111,7 +111,7 @@ struct script_convert_argument<Argument_type, true, false, false, true>
     operator Argument_type()
     {
         // Get the point to an object of the Argument_type using the
-        // I_ObjectReference* converted from the boost::any.
+        // I_ScriptWrapper* converted from the boost::any.
         base_type* pValue =
             dynamic_cast<base_type*>(this->getObject(this->m_pValue->getObject()));
 
@@ -131,7 +131,7 @@ struct script_convert_argument<Argument_type, true, false, false, true>
         throw bad_script_convert_argument(errorMessage.str());
     }
 
-    pScriptObjectReference_type m_pValue;
+    pScriptScriptWrapper_type m_pValue;
 };
 
 
@@ -143,14 +143,14 @@ struct script_convert_argument<Memory::managed_ptr<Argument_type>, false, true, 
     /// managed_ptr<I_ScriptableType> is kept as a managed_ptr<I_ScriptableType>
     typedef Memory::managed_ptr<Argument_type>                      type;
     typedef Argument_type                                           base_type;
-    typedef typename base_type::ScriptObjectReference_type*         pScriptObjectReference_type;
+    typedef typename base_type::ScriptScriptWrapper_type*         pScriptScriptWrapper_type;
 
     inline
     void
     operator()(boost::any& _parm)
     {
-        this->m_pValue = dynamic_cast<pScriptObjectReference_type>
-            (boost::any_cast<I_ObjectReference*>(_parm));
+        this->m_pValue = dynamic_cast<pScriptScriptWrapper_type>
+            (boost::any_cast<I_ScriptWrapper*>(_parm));
     }
 
     inline
@@ -179,7 +179,7 @@ struct script_convert_argument<Memory::managed_ptr<Argument_type>, false, true, 
         throw bad_script_convert_argument(errorMessage.str());
     }
 
-    pScriptObjectReference_type m_pValue;
+    pScriptScriptWrapper_type m_pValue;
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
@@ -192,21 +192,21 @@ struct script_convert_argument<Argument_type, true, false, true, false>
         <
             Argument_type
         >::type base_type;
-    typedef typename base_type::ScriptObjectReference_type* pScriptObjectReference_type;
+    typedef typename base_type::ScriptScriptWrapper_type* pScriptScriptWrapper_type;
 
     inline
     void
     operator()(boost::any& _parm)
     {
-        m_pValue = dynamic_cast<pScriptObjectReference_type>
-            (boost::any_cast<I_ObjectReference*>(_parm));
+        m_pValue = dynamic_cast<pScriptScriptWrapper_type>
+            (boost::any_cast<I_ScriptWrapper*>(_parm));
     }
 
     inline
     operator Argument_type()
     {
         // Get the point to an object of the Argument_type using the
-        // I_ObjectReference* converted from the boost::any.
+        // I_ScriptWrapper* converted from the boost::any.
         base_type* pValue =
             dynamic_cast<base_type*>(m_pValue->getObject());
 
@@ -228,7 +228,7 @@ struct script_convert_argument<Argument_type, true, false, true, false>
         throw bad_script_convert_argument(errorMessage.str());
     }
 
-    pScriptObjectReference_type m_pValue;
+    pScriptScriptWrapper_type m_pValue;
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

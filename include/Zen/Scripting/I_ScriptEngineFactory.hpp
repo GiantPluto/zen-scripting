@@ -41,8 +41,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptEngineFactory();
-    virtual ~I_ScriptEngineFactory();
+             I_ScriptEngineFactory() = default;
+    virtual ~I_ScriptEngineFactory() = default;
     /// @}
 
 };  // interface I_ScriptEngineFactory

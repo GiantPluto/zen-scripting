@@ -7,12 +7,12 @@
 #ifndef ZEN_SCRIPTING_SCRIPTING_MANAGER_HPP_INCLUDED
 #define ZEN_SCRIPTING_SCRIPTING_MANAGER_HPP_INCLUDED
 
-#include "../I_ScriptingManager.hpp"
+#include <Zen/Scripting/I_ScriptingManager.hpp>
 
-#include "../I_ScriptEngineFactory.hpp"
-#include "../I_ScriptEngine.hpp"
+#include <Zen/Scripting/I_ScriptEngineFactory.hpp>
+#include <Zen/Scripting/I_ScriptEngine.hpp>
 
-#include <Zen/Core/Plugins/ServiceCache.hpp>
+#include <Zen/Plugin/ServiceCache.hpp>
 
 #include <map>
 

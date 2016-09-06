@@ -25,7 +25,7 @@
 #include "ScriptingManager.hpp"
 
 // Include this just for testing the compile
-#include "../ObjectReference.hpp"
+#include "../ScriptWrapper.hpp"
 
 #include <Zen/Core/Memory/managed_ptr.hpp>
 

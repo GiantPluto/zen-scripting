@@ -18,7 +18,7 @@
 namespace Zen {
 namespace Scripting {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-class I_ObjectReference;
+class I_ScriptWrapper;
 
 /// @brief Implement this in classes that are scriptable
 class SCRIPTING_DLL_LINK I_Scriptable
@@ -40,15 +40,15 @@ public:
     /// @brief Get the script object associated with this object
     /// @return The script object associated with this object, but possibly NULL if this object
     ///         was created before a script engine was registered.
-    virtual I_ObjectReference* getScriptObject() = 0;
+    virtual I_ScriptWrapper* getScriptObject() = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Scriptable();
+             I_Scriptable() = default;
 public:
-    virtual ~I_Scriptable();
+    virtual ~I_Scriptable() = default;
     /// @}
 
 };  // interface I_Scriptable

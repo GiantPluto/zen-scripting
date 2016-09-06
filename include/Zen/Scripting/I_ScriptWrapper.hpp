@@ -21,21 +21,21 @@ class I_ScriptModule;
 class I_ScriptType;
 
 /// Helper for mapping C++ objects to the I_ScriptObject
-class SCRIPTING_DLL_LINK I_ObjectReference
+class SCRIPTING_DLL_LINK I_ScriptWrapper
 {
     /// @name Types
     /// @{
 public:
-    typedef std::shared_ptr<I_ObjectReference>         pObjectReference_type;
-    typedef std::weak_ptr<I_ObjectReference>           wpObjectReference_type;
-    typedef Zen::Event::Event<wpObjectReference_type>  objectReferenceEvent_type;
+    typedef std::shared_ptr<I_ScriptWrapper>         pScriptWrapper_type;
+    typedef std::weak_ptr<I_ScriptWrapper>           wpScriptWrapper_type;
+    typedef Zen::Event::Event<wpScriptWrapper_type>  ScriptWrapperEvent_type;
 
     typedef std::shared_ptr<I_ScriptObject>            pScriptObject_type;
     typedef std::shared_ptr<I_ScriptModule>            pScriptModule_type;
     typedef std::shared_ptr<I_ScriptType>              pScriptType_type;
     /// @}
 
-    /// @name I_ObjectReference interface
+    /// @name I_ScriptWrapper interface
     /// @{
 public:
     virtual pScriptModule_type getModule() = 0;
@@ -52,16 +52,16 @@ public:
     /// @name Events
     /// @{
 public:
-    objectReferenceEvent_type   onDestroyEvent;
+    ScriptWrapperEvent_type   onDestroyEvent;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_ObjectReference();
-    virtual ~I_ObjectReference();
+             I_ScriptWrapper() = default;
+    virtual ~I_ScriptWrapper() = default;
     /// @}
-};  // interface I_ObjectReference
+};  // interface I_ScriptWrapper
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Scripting

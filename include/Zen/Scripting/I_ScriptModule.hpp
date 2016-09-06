@@ -19,7 +19,7 @@ namespace Scripting {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 class I_ScriptEngine;
 class I_ScriptType;
-class I_ObjectReference;
+class I_ScriptWrapper;
 
 /// A module within the script engine.
 /// Some script engines use this as a namespace.
@@ -38,7 +38,7 @@ public:
     typedef Zen::Event::Event<wpScriptModule_type> scriptModuleEvent_type;
 
     typedef std::shared_ptr<I_ScriptType>          pScriptType_type;
-    typedef std::shared_ptr<I_ObjectReference>     pObjectReference_type;
+    typedef std::shared_ptr<I_ScriptWrapper>     pScriptWrapper_type;
 
     typedef std::shared_ptr<I_ScriptEngine>        pScriptEngine_type;
     /// @}
@@ -66,13 +66,13 @@ public:
     /// @param _name Name of the object
     /// @param _pType Type of the object
     /// @param _pObject C++ version of the object
-    virtual void createObject(pScriptType_type _pType, I_ObjectReference* _pObject) = 0;
+    virtual void createObject(pScriptType_type _pType, I_ScriptWrapper* _pObject) = 0;
 
     /// Create a new global script object and binds it to a C++ object.
     /// @param _name Name of the object
     /// @param _pType Type of the object
     /// @param _pObject C++ version of the object
-    virtual void createGlobalObject(const std::string& _name, pScriptType_type _pType, I_ObjectReference* _pObject) = 0;
+    virtual void createGlobalObject(const std::string& _name, pScriptType_type _pType, I_ScriptWrapper* _pObject) = 0;
 
     virtual pScriptEngine_type getScriptEngine() = 0;
     /// @}
@@ -86,8 +86,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ScriptModule();
-    virtual ~I_ScriptModule();
+             I_ScriptModule() = default;
+    virtual ~I_ScriptModule() = default;
     /// @}
 
 };  // interface I_ScriptModule

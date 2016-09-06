@@ -50,7 +50,7 @@ struct get_script_object_pointer
 {
     inline
     ScriptableClass_type*
-    operator()(typename ScriptableClass_type::ScriptObjectReference_type* _pObject)
+    operator()(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
     {
         // If you get a syntax error here, _pObject is not a pointer to
         // ScriptableClass_type and you may need to create a template
@@ -67,7 +67,7 @@ struct get_script_object_pointer<ScriptableClass_type, true, false>
 {
     inline
     ScriptableClass_type*
-    operator()(typename ScriptableClass_type::ScriptObjectReference_type* _pObject)
+    operator()(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
     {
     	ScriptableClass_type* const pScriptable = dynamic_cast<ScriptableClass_type*>(_pObject->getRawObject());
     	assert(pScriptable != NULL);
@@ -83,7 +83,7 @@ struct get_script_object_pointer<ScriptableClass_type, false, true>
 {
     inline
     ScriptableClass_type*
-    operator()(typename ScriptableClass_type::ScriptObjectReference_type* _pObject)
+    operator()(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
     {
     	ScriptableClass_type* const pScriptable = dynamic_cast<ScriptableClass_type*>(_pObject->getObject());
     	assert(pScriptable != NULL);
@@ -165,9 +165,9 @@ script_override_return_type
 
 /// This helper is used to get the correct detail::get_script_object_pointer
 /// implementation which will convert from
-/// ScriptableClass_type::ScriptObjectReference_type*
+/// ScriptableClass_type::ScriptScriptWrapper_type*
 /// to the appropriate ScriptableClass_type*.
-/// ScriptObjectReference_type wraps either a ScriptableClass_type* or a
+/// ScriptScriptWrapper_type wraps either a ScriptableClass_type* or a
 /// managed_ptr<ScriptableClass_type>.
 template<typename ScriptableClass_type, typename object_ptr_type>
 struct
@@ -188,13 +188,13 @@ template<typename Method_type, typename Return_type, class ScriptableClass_type>
 class script_dispatch_helper
 {
 public:
-    typedef typename ScriptableClass_type::ScriptObjectReference_type   ScriptObjectReference_type;
-    typedef typename ScriptObjectReference_type::object_ptr_type        object_ptr_type;
+    typedef typename ScriptableClass_type::ScriptScriptWrapper_type   ScriptScriptWrapper_type;
+    typedef typename ScriptScriptWrapper_type::object_ptr_type        object_ptr_type;
 
     typedef Return_type                                        MethodReturn_type;
 
     ScriptableClass_type*
-    getRawObject(typename ScriptableClass_type::ScriptObjectReference_type* _pObject)
+    getRawObject(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
     {
         get_script_object_pointer<ScriptableClass_type, object_ptr_type> get_script_object_pointer;
 
@@ -202,7 +202,7 @@ public:
     }
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms) = 0;
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms) = 0;
 
     virtual
     unsigned
@@ -236,9 +236,9 @@ class BOOST_PP_CAT(derived_dispatch_helper, N)
 public:
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms)
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptObjectReference_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptObjectReference_type*>(_pObject);
+        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
     (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
@@ -268,9 +268,9 @@ class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, void, ScriptableClas
 public:
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms)
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptObjectReference_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptObjectReference_type*>(_pObject);
+        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
     (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
@@ -300,9 +300,9 @@ class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, I_ScriptableType&, S
 public:
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms)
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptObjectReference_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptObjectReference_type*>(_pObject);
+        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
     (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
@@ -312,7 +312,7 @@ public:
 #include BOOST_PP_ITERATE()
 #endif
 
-        // Return I_ObjectReference*
+        // Return I_ScriptWrapper*
         return dynamic_cast<I_ScriptableType*>(&(getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)))->getScriptObject();
     }
 
@@ -331,9 +331,9 @@ class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, I_ScriptableType*, S
 public:
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms)
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptObjectReference_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptObjectReference_type*>(_pObject);
+        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
     (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
@@ -343,7 +343,7 @@ public:
 #include BOOST_PP_ITERATE()
 #endif
 
-        // Return I_ObjectReference*
+        // Return I_ScriptWrapper*
         return dynamic_cast<I_ScriptableType*>((getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)))->getScriptObject();
     }
 
@@ -362,9 +362,9 @@ class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, std::shared_ptr<I_Sc
 public:
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms)
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptObjectReference_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptObjectReference_type*>(_pObject);
+        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
     (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
@@ -374,7 +374,7 @@ public:
 #include BOOST_PP_ITERATE()
 #endif
 
-        // Return I_ObjectReference*
+        // Return I_ScriptWrapper*
         return (getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm))->getScriptObject();
     }
 
@@ -394,9 +394,9 @@ class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, std::weak_ptr<I_Scri
 public:
 
     virtual
-    boost::any dispatch(Method_type _function, I_ObjectReference* _pObject, std::vector<boost::any> _parms)
+    boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptObjectReference_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptObjectReference_type*>(_pObject);
+        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
     (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
@@ -406,7 +406,7 @@ public:
 #include BOOST_PP_ITERATE()
 #endif
 
-        // Return I_ObjectReference*
+        // Return I_ScriptWrapper*
         return (getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)).lock()->getScriptObject();
     }
 

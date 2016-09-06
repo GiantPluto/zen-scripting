@@ -18,7 +18,7 @@ namespace Zen {
 namespace Scripting {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_ObjectReference;
+class I_ScriptWrapper;
 
 /// @note RAR - I don't think we're actively using this anymore.
 ///		It was originally part of the implementation of the Java -> C++
@@ -33,7 +33,7 @@ public:
     typedef std::weak_ptr<I_ObjectHeap>     wpObjectHeap_type;
     typedef Zen::Event::Event<wpObjectHeap_type>            objectHeapEvent_type;
 
-    typedef std::shared_ptr<I_ObjectReference>     pObjectReference_type;
+    typedef std::shared_ptr<I_ScriptWrapper>     pScriptWrapper_type;
     /// @}
 
     /// @name I_ObjectHeap interface
@@ -42,11 +42,11 @@ public:
     /// Create a new object based on the object reference.
     /// This really doesn't do anything except maintain the
     /// reference count of the C++ wrapped object.
-    virtual void createObject(pObjectReference_type _pObject) = 0;
+    virtual void createObject(pScriptWrapper_type _pObject) = 0;
 
     /// Get the global reference object from the heap that is the same
     /// as the reference passed as a parameter.
-    virtual pObjectReference_type getGlobalReference(I_ObjectReference& _object) = 0;
+    virtual pScriptWrapper_type getGlobalReference(I_ScriptWrapper& _object) = 0;
     /// @}
 
     /// @name Events

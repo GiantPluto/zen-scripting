@@ -7,7 +7,7 @@
 #ifndef ZEN_SCRIPTING_OBJECT_REFERENCE_HPP_INCLUDED
 #define ZEN_SCRIPTING_OBJECT_REFERENCE_HPP_INCLUDED
 
-#include <Zen/Scripting/I_ObjectReference.hpp>
+#include <Zen/Scripting/I_ScriptWrapper.hpp>
 #include <Zen/Scripting/I_ScriptObject.hpp>
 #include <Zen/Scripting/I_ScriptModule.hpp>
 
@@ -24,11 +24,10 @@ class I_ScriptType;
 
 /// Script wrapper for a C++ object.
 /// @see http://www.indiezen.org/wiki/ticket/90
-/// @todo Rename this to ScriptWrapper and change ScriptObjectReference_type to 
-///     ScriptWrapper_type.
+/// @todo This class used to be ObjectReference implementing I_ObjectType
 template<typename Object_type>
-class ObjectReference
-:   public I_ObjectReference
+class ScriptWrapper
+:   public I_ScriptWrapper
 {
     /// @name Types
     /// @{
@@ -45,7 +44,7 @@ public:
     typedef std::shared_ptr<I_ScriptType>              pScriptType_type;
     /// @}
 
-    /// @name I_ObjectReference implementation
+    /// @name I_ScriptWrapper implementation
     /// @{
 public:
     virtual pScriptModule_type getModule();
@@ -58,7 +57,7 @@ public:
     virtual void* getScriptUserData() const;
     /// @}
 
-    /// @name ObjectReference implementation
+    /// @name ScriptWrapper implementation
     /// @{
 public:
     object_ptr_type getObject();
@@ -67,7 +66,7 @@ public:
     /// 
     /// This is provided as a convienience and should be used with care.
     /// The raw object lifetime is only guaranteed to be as long as
-    /// this ObjectReference's lifetime, so don't keep a dangling 
+    /// this ScriptWrapper's lifetime, so don't keep a dangling 
     /// reference to this returned pointer.  Use getObject() if you
     /// need a managed pointer.
     Object_type* getRawObject();
@@ -76,9 +75,9 @@ public:
     /// @name 'Structors
     /// @{
 public:
-             ObjectReference(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject);
-             ObjectReference(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject, const std::string& _name);
-    virtual ~ObjectReference();
+             ScriptWrapper(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject);
+             ScriptWrapper(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject, const std::string& _name);
+    virtual ~ScriptWrapper();
     /// @}
 
     /// @name Member Variables
@@ -92,11 +91,11 @@ private:
     void*               m_pUserData;
     /// @}
 
-};  // class ObjectReference
+};  // class ScriptWrapper
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 template<typename Object_type>
-ObjectReference<Object_type>::ObjectReference(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject)
+ScriptWrapper<Object_type>::ScriptWrapper(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject)
 :   m_pModule(_pModule)
 ,   m_pType(_pType)
 ,   m_pObject(_pObject)
@@ -107,7 +106,7 @@ ObjectReference<Object_type>::ObjectReference(pScriptModule_type _pModule, pScri
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 template<typename Object_type>
-ObjectReference<Object_type>::ObjectReference(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject, const std::string& _name)
+ScriptWrapper<Object_type>::ScriptWrapper(pScriptModule_type _pModule, pScriptType_type _pType, object_ptr_type _pObject, const std::string& _name)
 :   m_pModule(_pModule)
 ,   m_pType(_pType)
 ,   m_pObject(_pObject)
@@ -118,7 +117,7 @@ ObjectReference<Object_type>::ObjectReference(pScriptModule_type _pModule, pScri
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 template<typename Object_type>
-ObjectReference<Object_type>::~ObjectReference()
+ScriptWrapper<Object_type>::~ScriptWrapper()
 {
 }
 
@@ -126,7 +125,7 @@ ObjectReference<Object_type>::~ObjectReference()
 template<typename Object_type>
 inline
 std::shared_ptr<I_ScriptObject>
-ObjectReference<Object_type>::getScriptObject()
+ScriptWrapper<Object_type>::getScriptObject()
 {
     return m_pScriptObject;
 }
@@ -135,7 +134,7 @@ ObjectReference<Object_type>::getScriptObject()
 template<typename Object_type>
 inline
 void
-ObjectReference<Object_type>::setScriptObject(pScriptObject_type _pScriptObject)
+ScriptWrapper<Object_type>::setScriptObject(pScriptObject_type _pScriptObject)
 {
     m_pScriptObject = _pScriptObject;
 }
@@ -144,7 +143,7 @@ ObjectReference<Object_type>::setScriptObject(pScriptObject_type _pScriptObject)
 template<typename Object_type>
 inline
 void
-ObjectReference<Object_type>::setScriptUserData(void* _pUserData)
+ScriptWrapper<Object_type>::setScriptUserData(void* _pUserData)
 {
     m_pUserData = _pUserData;
 }
@@ -153,7 +152,7 @@ ObjectReference<Object_type>::setScriptUserData(void* _pUserData)
 template<typename Object_type>
 inline
 void*
-ObjectReference<Object_type>::getScriptUserData() const
+ScriptWrapper<Object_type>::getScriptUserData() const
 {
     return m_pUserData;
 }
@@ -162,7 +161,7 @@ ObjectReference<Object_type>::getScriptUserData() const
 template<typename Object_type>
 inline
 std::shared_ptr<I_ScriptModule>
-ObjectReference<Object_type>::getModule()
+ScriptWrapper<Object_type>::getModule()
 {
     return m_pModule;
 }
@@ -171,7 +170,7 @@ ObjectReference<Object_type>::getModule()
 template<typename Object_type>
 inline
 std::shared_ptr<I_ScriptType>
-ObjectReference<Object_type>::getType()
+ScriptWrapper<Object_type>::getType()
 {
     return m_pType;
 }
@@ -179,8 +178,8 @@ ObjectReference<Object_type>::getType()
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 template<typename Object_type>
 inline
-typename ObjectReference<Object_type>::object_ptr_type
-ObjectReference<Object_type>::getObject()
+typename ScriptWrapper<Object_type>::object_ptr_type
+ScriptWrapper<Object_type>::getObject()
 {
     return m_pObject;
 }
@@ -189,7 +188,7 @@ ObjectReference<Object_type>::getObject()
 template<typename Object_type>
 inline
 Object_type*
-ObjectReference<Object_type>::getRawObject()
+ScriptWrapper<Object_type>::getRawObject()
 {
     return m_pObject.get();
 }

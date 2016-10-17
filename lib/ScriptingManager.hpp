@@ -29,7 +29,7 @@ class ScriptingManager
     /// @name Types
     /// @{
 public:
-    typedef Zen::Plugins::ServiceCache<I_ScriptEngine, I_ScriptEngineFactory>   scriptEngineCache_type;
+    typedef Zen::Plugin::ServiceCache<I_ScriptEngine, I_ScriptEngineFactory>   scriptEngineCache_type;
     /// @}
 
     /// @name I_ScriptingManager interface

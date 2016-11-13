@@ -31,7 +31,7 @@ ScriptingManager::~ScriptingManager()
 ScriptingManager::pScriptEngine_type
 ScriptingManager::createScriptEngine(const std::string &_name)
 {
-    Zen::Threading::CriticalSection guard(this->m_scriptEngineCache.getLock());
+    std::lock_guard<std::mutex> guard(this->m_scriptEngineCache.getLock());
 
     pScriptEngine_type pScriptEngine(this->m_scriptEngineCache.getCachedService(_name));
 

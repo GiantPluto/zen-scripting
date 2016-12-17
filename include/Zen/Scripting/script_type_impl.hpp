@@ -139,7 +139,7 @@ script_type<ScriptableClass_type>::createGlobals()
 template<typename ScriptableClass_type>
 inline
 void
-script_type<ScriptableClass_type>::createGlobalObject(const std::string& _objectName, I_ScriptableType* _pScriptableObject)
+script_type<ScriptableClass_type>::createGlobalObject(const std::string& _objectName, I_Scriptable* _pScriptableObject)
 {
     // Defer the creation of the object until after the module has been activated.
     // For now, keep a collection of global objects, and when the module

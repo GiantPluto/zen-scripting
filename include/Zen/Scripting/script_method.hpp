@@ -9,8 +9,7 @@
 #include <Zen/Scripting/forward_declarations.hpp>
 #include <Zen/Scripting/I_ScriptMethod.hpp>
 
-#include <Zen/Core/Utility/runtime_exception.hpp>
-
+#include <stdexcept>
 #include <sstream>
 #include <string>
 
@@ -71,19 +70,19 @@ script_method<ScriptableClass_type, Method_type, Return_type, DispatchHelper_typ
         std::stringstream errorMessage;
         errorMessage << "Error calling C++ method " << m_typeName << "::" << m_methodName << ": Not enough arguments.  Expected " 
             <<  m_dispatchHelper.getParameterCount() << ", but got " << _parms.size();
-        throw Utility::runtime_exception(errorMessage.str());
+        throw std::runtime_error(errorMessage.str());
     }
 
     try
     {
         return m_dispatchHelper.dispatch(m_pFunction, _pObject, _parms);
     }
-    catch(Utility::runtime_exception& _ex)
+    catch(std::runtime_error& _ex)
     {
         std::stringstream errorMessage;
         errorMessage << "Caught an exception in C++ method " << m_typeName << "::" << m_methodName << ": "
             << _ex.what();
-        throw Utility::runtime_exception(errorMessage.str());
+        throw std::runtime_error(errorMessage.str());
     }
 }
 

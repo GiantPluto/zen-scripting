@@ -29,6 +29,7 @@
 
 #include <boost/any.hpp>
 
+#include <stdexcept>
 #include <sstream>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
@@ -50,7 +51,7 @@ struct get_script_object_pointer
 {
     inline
     ScriptableClass_type*
-    operator()(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
+    operator()(typename ScriptableClass_type::ScriptWrapper_type* _pObject)
     {
         // If you get a syntax error here, _pObject is not a pointer to
         // ScriptableClass_type and you may need to create a template
@@ -67,7 +68,7 @@ struct get_script_object_pointer<ScriptableClass_type, true, false>
 {
     inline
     ScriptableClass_type*
-    operator()(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
+    operator()(typename ScriptableClass_type::ScriptWrapper_type* _pObject)
     {
     	ScriptableClass_type* const pScriptable = dynamic_cast<ScriptableClass_type*>(_pObject->getRawObject());
     	assert(pScriptable != NULL);
@@ -83,7 +84,7 @@ struct get_script_object_pointer<ScriptableClass_type, false, true>
 {
     inline
     ScriptableClass_type*
-    operator()(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
+    operator()(typename ScriptableClass_type::ScriptWrapper_type* _pObject)
     {
     	ScriptableClass_type* const pScriptable = dynamic_cast<ScriptableClass_type*>(_pObject->getObject());
     	assert(pScriptable != NULL);
@@ -101,44 +102,44 @@ script_override_return_type
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Specialization for when Return_type inherits from I_ScriptableType
+/// Specialization for when Return_type inherits from I_Scriptable
 /// and Return_type is a pointer.
 template<typename Return_type>
 struct
 script_override_return_type<Return_type, true, false, true>
 {
-    typedef I_ScriptableType*       type;
+    typedef I_Scriptable*       type;
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Specialization for when Return_type inherits from I_ScriptableType
+/// Specialization for when Return_type inherits from I_Scriptable
 /// and Return_type is a reference.
 template<typename Return_type>
 struct
 script_override_return_type<Return_type, true, true, false>
 {
-    typedef I_ScriptableType&       type;
+    typedef I_Scriptable&       type;
 };
 
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Specialization for when Return_type is a managed_ptr<I_ScriptableType>
-/// (or a managed pointer of something that derives from I_ScriptableType).
+/// Specialization for when Return_type is a managed_ptr<I_Scriptable>
+/// (or a managed pointer of something that derives from I_Scriptable).
 template<typename Return_type>
 struct
 script_override_return_type<Return_type, false, false, false, true>
 {
-    typedef std::shared_ptr<I_ScriptableType>  type;
+    typedef std::shared_ptr<I_Scriptable>  type;
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Specialization for when Return_type is a managed_weak_ptr<I_ScriptableType>
-/// (or a managed weak pointer of something that derives from I_ScriptableType).
+/// Specialization for when Return_type is a managed_weak_ptr<I_Scriptable>
+/// (or a managed weak pointer of something that derives from I_Scriptable).
 template<typename Return_type>
 struct
 script_override_return_type<Return_type, false, false, false, false, true>
 {
-    typedef std::weak_ptr<I_ScriptableType>  type;
+    typedef std::weak_ptr<I_Scriptable>  type;
 };
 
 
@@ -148,7 +149,7 @@ script_override_return_type<Return_type, false, false, false, false, true>
 
 /// Determine the real return type to be exported to script.
 /// This helps convert references, pointers, and smart pointers
-/// to objects of types that inherit I_ScriptableType to I_ScriptObject*
+/// to objects of types that inherit I_Scriptable to I_ScriptObject*
 template<typename Return_type>
 struct
 script_override_return_type
@@ -156,7 +157,7 @@ script_override_return_type
     detail::is_scriptable_type<Return_type>::value,
     boost::is_reference<Return_type>::value,
     boost::is_pointer<Return_type>::value,
-    detail::is_managed_scriptable_type<Return_type>::value,
+    detail::is_shared_ptr_scriptable_type<Return_type>::value,
     detail::is_weak_ptr_scriptable_type<Return_type>::value >
 {
 };
@@ -165,15 +166,15 @@ script_override_return_type
 
 /// This helper is used to get the correct detail::get_script_object_pointer
 /// implementation which will convert from
-/// ScriptableClass_type::ScriptScriptWrapper_type*
+/// ScriptableClass_type::ScriptWrapper_type*
 /// to the appropriate ScriptableClass_type*.
-/// ScriptScriptWrapper_type wraps either a ScriptableClass_type* or a
+/// ScriptWrapper_type wraps either a ScriptableClass_type* or a
 /// managed_ptr<ScriptableClass_type>.
 template<typename ScriptableClass_type, typename object_ptr_type>
 struct
 get_script_object_pointer
 : public detail::get_script_object_pointer<ScriptableClass_type,
-		detail::is_managed_scriptable_type<object_ptr_type>::value,
+		detail::is_shared_ptr_scriptable_type<object_ptr_type>::value,
         boost::is_base_of<typename boost::remove_pointer<object_ptr_type>::type, ScriptableClass_type>::value &&
         boost::is_pointer<object_ptr_type>::value
     >
@@ -188,13 +189,13 @@ template<typename Method_type, typename Return_type, class ScriptableClass_type>
 class script_dispatch_helper
 {
 public:
-    typedef typename ScriptableClass_type::ScriptScriptWrapper_type   ScriptScriptWrapper_type;
-    typedef typename ScriptScriptWrapper_type::object_ptr_type        object_ptr_type;
+    typedef typename ScriptableClass_type::ScriptWrapper_type   ScriptWrapper_type;
+    typedef typename ScriptWrapper_type::object_ptr_type        object_ptr_type;
 
     typedef Return_type                                        MethodReturn_type;
 
     ScriptableClass_type*
-    getRawObject(typename ScriptableClass_type::ScriptScriptWrapper_type* _pObject)
+    getRawObject(typename ScriptableClass_type::ScriptWrapper_type* _pObject)
     {
         get_script_object_pointer<ScriptableClass_type, object_ptr_type> get_script_object_pointer;
 
@@ -211,7 +212,7 @@ public:
 
 
 #define BOOST_PP_ITERATION_PARAMS_1 \
-    (3, (0, ZEN_SCRIPTING_MAX_SCRIPT_PARMS, <Zen/Core/Scripting/script_dispatch_helper.hpp>))
+    (3, (0, ZEN_SCRIPTING_MAX_SCRIPT_PARMS, <Zen/Scripting/script_dispatch_helper.hpp>))
 
 #include BOOST_PP_ITERATE()
 
@@ -238,10 +239,10 @@ public:
     virtual
     boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
+        typename ScriptableClass_type::ScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
+    (3, (0, M, <Zen/Scripting/script_arity_conversion.hpp>))
 
 // Only expand if M != 0
 #if BOOST_PP_IF(N, 1, 0)
@@ -270,10 +271,10 @@ public:
     virtual
     boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
+        typename ScriptableClass_type::ScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
+    (3, (0, M, <Zen/Scripting/script_arity_conversion.hpp>))
 
 // Only expand if M != 0
 #if BOOST_PP_IF(N, 1, 0)
@@ -281,7 +282,7 @@ public:
 #endif
 
         boost::any returnValue;
-        (getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm));
+        (this->getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm));
         return returnValue;
     }
 
@@ -292,20 +293,20 @@ public:
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Specialization for Return_type = I_ScriptableType&
+// Specialization for Return_type = I_Scriptable&
 template<typename Method_type, class ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class parmType)>
-class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, I_ScriptableType&, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
-:   public script_dispatch_helper<Method_type, I_ScriptableType&, ScriptableClass_type>
+class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, I_Scriptable&, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
+:   public script_dispatch_helper<Method_type, I_Scriptable&, ScriptableClass_type>
 {
 public:
 
     virtual
     boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
+        typename ScriptableClass_type::ScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
+    (3, (0, M, <Zen/Scripting/script_arity_conversion.hpp>))
 
 // Only expand if M != 0
 #if BOOST_PP_IF(N, 1, 0)
@@ -313,7 +314,7 @@ public:
 #endif
 
         // Return I_ScriptWrapper*
-        return dynamic_cast<I_ScriptableType*>(&(getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)))->getScriptObject();
+        return dynamic_cast<I_Scriptable*>(&(this->getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)))->getScriptObject();
     }
 
     virtual unsigned getParameterCount() const
@@ -323,20 +324,20 @@ public:
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Specialization for Return_type = I_ScriptableType*
+// Specialization for Return_type = I_Scriptable*
 template<typename Method_type, class ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class parmType)>
-class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, I_ScriptableType*, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
-:   public script_dispatch_helper<Method_type, I_ScriptableType*, ScriptableClass_type>
+class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, I_Scriptable*, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
+:   public script_dispatch_helper<Method_type, I_Scriptable*, ScriptableClass_type>
 {
 public:
 
     virtual
     boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
+        typename ScriptableClass_type::ScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
+    (3, (0, M, <Zen/Scripting/script_arity_conversion.hpp>))
 
 // Only expand if M != 0
 #if BOOST_PP_IF(N, 1, 0)
@@ -344,7 +345,7 @@ public:
 #endif
 
         // Return I_ScriptWrapper*
-        return dynamic_cast<I_ScriptableType*>((getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)))->getScriptObject();
+        return dynamic_cast<I_Scriptable*>((getRawObject(pObject)->*_function)(BOOST_PP_ENUM_PARAMS_Z(1, N, parm)))->getScriptObject();
     }
 
     virtual unsigned getParameterCount() const
@@ -354,20 +355,20 @@ public:
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Specialization for Return_type = std::shared_ptr<I_ScriptableType>
+// Specialization for Return_type = std::shared_ptr<I_Scriptable>
 template<typename Method_type, class ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class parmType)>
-class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, std::shared_ptr<I_ScriptableType>, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
-:   public script_dispatch_helper<Method_type, std::shared_ptr<I_ScriptableType>, ScriptableClass_type>
+class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, std::shared_ptr<I_Scriptable>, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
+:   public script_dispatch_helper<Method_type, std::shared_ptr<I_Scriptable>, ScriptableClass_type>
 {
 public:
 
     virtual
     boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
+        typename ScriptableClass_type::ScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
+    (3, (0, M, <Zen/Scripting/script_arity_conversion.hpp>))
 
 // Only expand if M != 0
 #if BOOST_PP_IF(N, 1, 0)
@@ -386,20 +387,20 @@ public:
 
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Specialization for Return_type = std::shared_ptr<I_ScriptableType>
+// Specialization for Return_type = std::shared_ptr<I_Scriptable>
 template<typename Method_type, class ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class parmType)>
-class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, std::weak_ptr<I_ScriptableType>, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
-:   public script_dispatch_helper<Method_type, std::weak_ptr<I_ScriptableType>, ScriptableClass_type>
+class BOOST_PP_CAT(derived_dispatch_helper, N)<Method_type, std::weak_ptr<I_Scriptable>, ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, parmType)>
+:   public script_dispatch_helper<Method_type, std::weak_ptr<I_Scriptable>, ScriptableClass_type>
 {
 public:
 
     virtual
     boost::any dispatch(Method_type _function, I_ScriptWrapper* _pObject, std::vector<boost::any> _parms)
     {
-        typename ScriptableClass_type::ScriptScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptScriptWrapper_type*>(_pObject);
+        typename ScriptableClass_type::ScriptWrapper_type* pObject = dynamic_cast<typename ScriptableClass_type::ScriptWrapper_type*>(_pObject);
 
 #define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, M, <Zen/Core/Scripting/script_arity_conversion.hpp>))
+    (3, (0, M, <Zen/Scripting/script_arity_conversion.hpp>))
 
 // Only expand if M != 0
 #if BOOST_PP_IF(N, 1, 0)
@@ -454,8 +455,8 @@ get_dispatch_helper(Method_type _function, Return_type(ScriptableClass_type::*_m
 /// detail::get_dispatch_helper.
 /// OverrideReturn_type is script_override_return_type<Return_type>::type, which
 /// will override the return type using some template specialization.  Any return type which
-/// is a pointer or a reference to an I_ScriptableType will be changed to return
-/// I_ScriptableType* instead of Return_type.
+/// is a pointer or a reference to an I_Scriptable will be changed to return
+/// I_Scriptable* instead of Return_type.
 /// This is facilitated by derived_dispatch_helper template specialization.
 template<typename Method_type, typename Return_type, class ScriptableClass_type BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class parmType)>
 script_dispatch_helper<Method_type, typename script_override_return_type<Return_type>::type, ScriptableClass_type>&

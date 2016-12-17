@@ -9,7 +9,7 @@
 
 #include "Configuration.hpp"
 
-#include <Zen/Core/Event/Event.hpp>
+// #include <Zen/Core/Event/Event.hpp>
 
 #include <boost/function.hpp>
 #include <boost/any.hpp>
@@ -24,6 +24,7 @@ class I_ScriptWrapper;
 class I_ScriptMethod;
 class I_ScriptModule;
 
+/// Meta data for a script type.
 class SCRIPTING_DLL_LINK I_ScriptType
 {
     /// @name Types
@@ -31,7 +32,7 @@ class SCRIPTING_DLL_LINK I_ScriptType
 public:
     typedef std::shared_ptr<I_ScriptType>               pScriptType_type;
     typedef std::weak_ptr<I_ScriptType>                 wpScriptType_type;
-    typedef Zen::Event::Event<wpScriptType_type>        scriptTypeEvent_type;
+    // typedef Zen::Event::Event<wpScriptType_type>        scriptTypeEvent_type;
     typedef std::shared_ptr<I_ScriptModule>             pScriptModule_type;
 
     typedef I_ScriptWrapper*                          pScriptWrapper_type;
@@ -105,7 +106,7 @@ public:
     /// @name Events
     /// @{
 public:
-    scriptTypeEvent_type    onDestroyEvent;
+    // scriptTypeEvent_type    onDestroyEvent;
     /// @}
 
     /// @name 'Structors

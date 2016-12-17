@@ -17,7 +17,7 @@
 #include <Zen/Core/Math/Matrix4.hpp>
 #endif // USE_ZEN_MATH
 
-// Not implemented in 2.0
+// Not implemented in 2.0; use std::runtime_error from <stdexcept> instead
 //#include <Zen/Core/Utility/runtime_exception.hpp>
 
 #include <boost/cstdint.hpp>
@@ -33,10 +33,10 @@ namespace Scripting {
 // rename to argument_from_script?
 
 class bad_script_convert_argument
-:   public Utility::runtime_exception
+:   public std::runtime_error
 {
 public:
-    bad_script_convert_argument(const std::string& _e) : Zen::Utility::runtime_exception(_e) {}
+    bad_script_convert_argument(const std::string& _e) : std::runtime_error(_e) {}
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
@@ -46,7 +46,7 @@ namespace detail {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
 // bool - is_scriptable_type
-// bool - is_managed_scriptable_type
+// bool - is_shared_ptr_scriptable_type
 // bool - is_pointer
 // bool - is_reference
 template<typename Argument_type, bool, bool, bool, bool>
@@ -75,25 +75,25 @@ struct script_convert_argument
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Reference to a class derived from I_ScriptableType
+/// Reference to a class derived from I_Scriptable
 template<typename Argument_type>
 struct script_convert_argument<Argument_type, true, false, false, true>
 {
-    /// I_ScriptableType& is converted to I_ScriptableType*
+    /// I_Scriptable& is converted to I_Scriptable*
     typedef typename boost::remove_reference<Argument_type>::type*  type;
     typedef typename boost::remove_pointer
         <
             typename boost::remove_reference<Argument_type>::type
         >::type base_type;
 
-    typedef typename base_type::ScriptScriptWrapper_type*          pScriptScriptWrapper_type;
+    typedef typename base_type::ScriptWrapper_type*          pScriptWrapper_type;
     inline
     void
     operator()(boost::any& _parm)
     {
         // Scriptable objects passed as an argument to a method are passed
         // as I_ScriptWrapper*.  Get this value and save it for later use.
-        m_pValue = dynamic_cast<pScriptScriptWrapper_type>
+        m_pValue = dynamic_cast<pScriptWrapper_type>
             (boost::any_cast<I_ScriptWrapper*>(_parm));
     }
 
@@ -102,7 +102,7 @@ struct script_convert_argument<Argument_type, true, false, false, true>
         return _pObject;
     }
 
-    inline base_type* getObject(Memory::managed_ptr<base_type> _pObject)
+    inline base_type* getObject(std::shared_ptr<base_type> _pObject)
     {
         return _pObject.get();
     }
@@ -131,32 +131,32 @@ struct script_convert_argument<Argument_type, true, false, false, true>
         throw bad_script_convert_argument(errorMessage.str());
     }
 
-    pScriptScriptWrapper_type m_pValue;
+    pScriptWrapper_type m_pValue;
 };
 
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// managed_ptr of a class derived from I_ScriptableType
+/// shared_ptr of a class derived from I_Scriptable
 template<typename Argument_type>
-struct script_convert_argument<Memory::managed_ptr<Argument_type>, false, true, false, false>
+struct script_convert_argument<std::shared_ptr<Argument_type>, false, true, false, false>
 {
-    /// managed_ptr<I_ScriptableType> is kept as a managed_ptr<I_ScriptableType>
-    typedef Memory::managed_ptr<Argument_type>                      type;
-    typedef Argument_type                                           base_type;
-    typedef typename base_type::ScriptScriptWrapper_type*         pScriptScriptWrapper_type;
+    /// shared_ptr<I_Scriptable> is kept as a shared_ptr<I_Scriptable>
+    typedef std::shared_ptr<Argument_type>                        type;
+    typedef Argument_type                                         base_type;
+    typedef typename base_type::ScriptWrapper_type*         pScriptWrapper_type;
 
     inline
     void
     operator()(boost::any& _parm)
     {
-        this->m_pValue = dynamic_cast<pScriptScriptWrapper_type>
+        this->m_pValue = dynamic_cast<pScriptWrapper_type>
             (boost::any_cast<I_ScriptWrapper*>(_parm));
     }
 
     inline
     operator type()
     {
-        // Get a managed pointer to an object of the argument type.
+        // Get a shared pointer to an object of the argument type.
         // This handles cases where the passed type isn't exactly
         // the same as the expected type, but can be dynamic_cast<> to
         // get the correct type. as<>() handles the conversion correctly.
@@ -179,26 +179,26 @@ struct script_convert_argument<Memory::managed_ptr<Argument_type>, false, true, 
         throw bad_script_convert_argument(errorMessage.str());
     }
 
-    pScriptScriptWrapper_type m_pValue;
+    pScriptWrapper_type m_pValue;
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// naked pointer of a class derived from I_ScriptableType
+/// naked pointer of a class derived from I_Scriptable
 template<typename Argument_type>
 struct script_convert_argument<Argument_type, true, false, true, false>
 {
-    /// I_ScriptableType* is converted to I_ScriptableType
+    /// I_Scriptable* is converted to I_Scriptable
     typedef typename boost::remove_pointer
         <
             Argument_type
         >::type base_type;
-    typedef typename base_type::ScriptScriptWrapper_type* pScriptScriptWrapper_type;
+    typedef typename base_type::ScriptWrapper_type* pScriptWrapper_type;
 
     inline
     void
     operator()(boost::any& _parm)
     {
-        m_pValue = dynamic_cast<pScriptScriptWrapper_type>
+        m_pValue = dynamic_cast<pScriptWrapper_type>
             (boost::any_cast<I_ScriptWrapper*>(_parm));
     }
 
@@ -228,11 +228,11 @@ struct script_convert_argument<Argument_type, true, false, true, false>
         throw bad_script_convert_argument(errorMessage.str());
     }
 
-    pScriptScriptWrapper_type m_pValue;
+    pScriptWrapper_type m_pValue;
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// (const?) reference to a copyable data type not derived from I_ScriptableType
+/// (const?) reference to a copyable data type not derived from I_Scriptable
 /// TODO Need to add is_copyable or something?
 template<typename Argument_type>
 struct script_convert_argument<Argument_type, false, false, false, true>
@@ -276,7 +276,11 @@ struct script_convert_argument<int&, false, false, false, true>
     {
         /// If this causes an error, we need to enhance this to support
         /// objects that aren't copyable.
+#ifdef USE_ZEN_MATH
         m_value = (int)boost::any_cast<Math::Real>(_parm);
+#else
+        m_value = (int)boost::any_cast<int>(_parm);
+#endif
     }
 
     inline
@@ -358,7 +362,7 @@ struct script_convert_argument
                 typename boost::remove_pointer<Argument_type>::type
             >::type
         >::value,
-        detail::is_managed_scriptable_type<Argument_type>::value,
+        detail::is_shared_ptr_scriptable_type<Argument_type>::value,
         boost::is_pointer<Argument_type>::value,
         boost::is_reference<Argument_type>::value
     >
@@ -377,7 +381,11 @@ struct script_convert_argument<int>
     operator()(boost::any& _parm)
     {
         // Convert from a Real to an int
+#ifdef USE_ZEN_MATH
         m_value = (int)boost::any_cast<Zen::Math::Real>(_parm);
+#else
+        m_value = (int)boost::any_cast<int>(_parm);
+#endif
     }
 
     inline

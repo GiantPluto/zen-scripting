@@ -20,6 +20,7 @@ class I_ScriptObject;
 class I_ScriptModule;
 class I_ScriptType;
 
+/// This class was I_ObjectReference in Zen Script 1.x
 /// Helper for mapping C++ objects to the I_ScriptObject
 class SCRIPTING_DLL_LINK I_ScriptWrapper
 {
@@ -28,7 +29,7 @@ class SCRIPTING_DLL_LINK I_ScriptWrapper
 public:
     typedef std::shared_ptr<I_ScriptWrapper>         pScriptWrapper_type;
     typedef std::weak_ptr<I_ScriptWrapper>           wpScriptWrapper_type;
-    typedef Zen::Event::Event<wpScriptWrapper_type>  ScriptWrapperEvent_type;
+    // typedef Zen::Event::Event<wpScriptWrapper_type>  ScriptWrapperEvent_type;
 
     typedef std::shared_ptr<I_ScriptObject>            pScriptObject_type;
     typedef std::shared_ptr<I_ScriptModule>            pScriptModule_type;
@@ -52,7 +53,7 @@ public:
     /// @name Events
     /// @{
 public:
-    ScriptWrapperEvent_type   onDestroyEvent;
+    // ScriptWrapperEvent_type   onDestroyEvent;
     /// @}
 
     /// @name 'Structors

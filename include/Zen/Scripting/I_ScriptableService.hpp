@@ -9,7 +9,7 @@
 #include "Configuration.hpp"
 
 #include <Zen/Scripting/I_ScriptEngine.hpp>
-#include <Zen/Scripting/I_ScriptableType.hpp>
+#include <Zen/Scripting/I_Scriptable.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Zen {
@@ -23,7 +23,7 @@ namespace Scripting {
 /// plugin system, or it can be an application service using Zen::Enterprise
 /// I_ApplicationService.
 class SCRIPTING_DLL_LINK I_ScriptableService
-:   public I_ScriptableType
+:   public I_Scriptable
 {
     /// @name Types
     /// @{

@@ -35,7 +35,7 @@ public:
 
     /// @name script_type_interface interface
     /// @{
-private:
+public:
     friend class script_module;
 
     /// Activate this script type.

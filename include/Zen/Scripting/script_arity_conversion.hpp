@@ -12,12 +12,12 @@ script_convert_argument<BOOST_PP_CAT(parmType, Q)> BOOST_PP_CAT(parm, Q);
         std::stringstream errorMessage;
         errorMessage << "Bad cast to " << typeid(typename boost::remove_reference<BOOST_PP_CAT(parmType, Q)>::type).name()
             << " for argument number " << Q << " (" << _e.what() << ")";
-        throw Zen::Utility::runtime_exception(errorMessage.str());
+        throw std::runtime_error(errorMessage.str());
     }
     catch(bad_script_convert_argument& _e)
     {
         std::stringstream errorMessage;
         errorMessage << _e.what() << " for argument number " << Q << " (" << _e.what() << ")";
-        throw Zen::Utility::runtime_exception(errorMessage.str());
+        throw std::runtime_error(errorMessage.str());
     }
 #undef Q

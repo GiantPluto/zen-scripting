@@ -10,7 +10,7 @@
 
 #include <Zen/Scripting/I_ScriptType.hpp>
 #include <Zen/Scripting/I_ScriptMethod.hpp>
-#include <Zen/Scripting/I_ScriptableType.hpp>
+#include <Zen/Scripting/I_Scriptable.hpp>
 
 #include <Zen/Scripting/forward_declarations.hpp>
 #include <Zen/Scripting/script_type_interface.hpp>
@@ -35,9 +35,9 @@ class script_type
     /// @name Types
     /// @{
 public:
-    typedef std::shared_ptr<I_ScriptType>                   pScriptType_type;
-    typedef std::weak_ptr<I_ScriptModule>                   wpScriptModule_type;
-    typedef std::map<std::string, I_ScriptableType*>        GlobalObjects_type;
+    typedef std::shared_ptr<I_ScriptType>               pScriptType_type;
+    typedef std::weak_ptr<I_ScriptModule>               wpScriptModule_type;
+    typedef std::map<std::string, I_Scriptable*>        GlobalObjects_type;
     /// @}
 
     /// @name script_type_interface implementation.
@@ -73,8 +73,8 @@ public:
     script_type<ScriptableClass_type>&
     addConstMethod(const std::string& _methodName, Method_type _pFunction);
 
-    /// Create a global instance of this script type.
-    void createGlobalObject(const std::string& _objectName, I_ScriptableType* _pScriptableObject);
+    /// Expose the specified object to the global name space.
+    void createGlobalObject(const std::string& _objectName, I_Scriptable* _pScriptableObject);
 
     /// Get the script module for this type.
     /// This will not always return a valid script module depending
@@ -135,6 +135,8 @@ protected:
 
 };  // class script_type
 
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+
 /// Extend script_type to handle derived types.
 template<typename ScriptableClass_type>
 class derived_script_type
@@ -143,11 +145,11 @@ class derived_script_type
     /// @name Types
     /// @{
 public:
-    typedef std::map<std::string, I_ScriptMethod*>          Methods_type;
-    typedef std::shared_ptr<I_ScriptType>          pScriptType_type;
-    typedef std::shared_ptr<I_ScriptModule>        pScriptModule_type;
-    typedef std::weak_ptr<I_ScriptModule>   wpScriptModule_type;
-    typedef std::map<std::string, I_ScriptableType*>        GlobalObjects_type;
+    typedef std::map<std::string, I_ScriptMethod*>  Methods_type;
+    typedef std::shared_ptr<I_ScriptType>           pScriptType_type;
+    typedef std::shared_ptr<I_ScriptModule>         pScriptModule_type;
+    typedef std::weak_ptr<I_ScriptModule>           wpScriptModule_type;
+    typedef std::map<std::string, I_Scriptable*>    GlobalObjects_type;
     /// @}
 
     /// @name script_type overrides

@@ -1,6 +1,6 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 // Zen
-// Copyright Tony Richards 2001 - 2007
+// Copyright Raymond A. Richards 2001 - 2016
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 /// @author  John S. Givler, Ph.D.(Computer Science)
 #ifndef ZEN_SCRIPTING_CONFIGURAGION_HPP_INCLUDED
@@ -19,7 +19,7 @@
 #    pragma inline_depth(255)
 #    pragma inline_recursion(off)
 #    pragma warning(disable:4251)   // 'identifier' : class 'type' needs to have dll-interface to be used by clients of class 'type2'
-#    pragma warning(disable:4275)   // non – DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier'
+#    pragma warning(disable:4275)   // non ï¿½ DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier'
 #ifdef VLD
 #include <vld.h>
 #endif // VLD

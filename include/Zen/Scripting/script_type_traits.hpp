@@ -41,10 +41,10 @@ is_shared_pointer<Class_type, std::shared_ptr<Class_type> >
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Is boost::true_type if Return_type implements I_ScriptableType
+/// Is boost::true_type if Return_type implements I_Scriptable
 template<typename Class_type>
 struct
-is_scriptable_type : public boost::is_base_of<I_ScriptableType,
+is_scriptable_type : public boost::is_base_of<I_Scriptable,
                         typename boost::remove_pointer<
                             typename boost::remove_reference<Class_type>::type
                         >::type
@@ -62,26 +62,26 @@ removed_shared_ptr
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Template to help determine if a class is a shared_ptr<I_ScriptableType>
+/// Template to help determine if a class is a shared_ptr<I_Scriptable>
 template<typename Return_type>
 struct
-is_shared_scriptable_type 
+is_shared_ptr_scriptable_type 
 : public boost::false_type
 {
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 /// Template specialization for the case where Return_type is a 
-/// shared_ptr of a class that derives from I_ScriptableType.
+/// shared_ptr of a class that derives from I_Scriptable.
 template<typename Return_type>
 struct
-is_shared_scriptable_type<std::shared_ptr<Return_type> >
+is_shared_ptr_scriptable_type<std::shared_ptr<Return_type> >
 :   public is_scriptable_type<Return_type>
 {
 };
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-/// Template to help determine if a class is a weak_ptr<I_ScriptableType>
+/// Template to help determine if a class is a weak_ptr<I_Scriptable>
 template<typename Return_type>
 struct
 is_weak_ptr_scriptable_type 
@@ -91,7 +91,7 @@ is_weak_ptr_scriptable_type
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 /// Template specialization for the case where Return_type is a 
-/// weak_ptr of a class that derives from I_ScriptableType.
+/// weak_ptr of a class that derives from I_Scriptable.
 template<typename Return_type>
 struct
 is_weak_ptr_scriptable_type<std::weak_ptr<Return_type> >

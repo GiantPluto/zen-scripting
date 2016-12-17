@@ -26,7 +26,6 @@ namespace Scripting {
 /// implementations from it or so you can use it as an example if
 /// you want to implement it in a different way.
 class script_module
-:   public boost::noncopyable
 {
     /// @name Types
     /// @{
@@ -83,6 +82,10 @@ private:
     pScriptModule_type          m_pModule;
 
     ScriptTypes                 m_scriptTypes;
+    
+    // Not copyable nor assignable
+    script_module(const script_module&) = delete;
+    void operator=(const script_module&) = delete;
 };  // class script_module
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

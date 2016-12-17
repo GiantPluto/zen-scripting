@@ -20,6 +20,8 @@ namespace Scripting {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 class I_ScriptWrapper;
 
+/// In Zen::Scripting 1.x, this was I_ScriptableType
+
 /// @brief Implement this in classes that are scriptable
 class SCRIPTING_DLL_LINK I_Scriptable
 {

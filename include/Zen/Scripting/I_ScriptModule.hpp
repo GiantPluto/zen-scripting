@@ -28,14 +28,15 @@ class I_ScriptWrapper;
 /// ignored in those cases, but you still need to implement this interface in 
 /// every scripting plugin.
 class SCRIPTING_DLL_LINK I_ScriptModule
-:   public Memory::managed_self_ref<I_ScriptModule>
+// TODO Why managed_self_ref?
+//:   public Memory::managed_self_ref<I_ScriptModule>
 {
     /// @name Types
     /// @{
 public:
     typedef std::shared_ptr<I_ScriptModule>        pScriptModule_type;
     typedef std::weak_ptr<I_ScriptModule>          wpScriptModule_type;
-    typedef Zen::Event::Event<wpScriptModule_type> scriptModuleEvent_type;
+    // typedef Zen::Event::Event<wpScriptModule_type> scriptModuleEvent_type;
 
     typedef std::shared_ptr<I_ScriptType>          pScriptType_type;
     typedef std::shared_ptr<I_ScriptWrapper>     pScriptWrapper_type;
@@ -80,7 +81,7 @@ public:
     /// @name Events
     /// @{
 public:
-    scriptModuleEvent_type  onDestroyEvent;
+    // scriptModuleEvent_type  onDestroyEvent;
     /// @}
 
     /// @name 'Structors

@@ -41,6 +41,7 @@ public:
     /// @name I_ScriptEngine interface
     /// @{
 public:
+    /// TODO Why is this here?  How is it used?
     virtual I_ObjectHeap& heap() = 0;
 
     /// Execute a script
@@ -59,6 +60,7 @@ public:
 
     /// @name Static methods
     /// @{
+    // TODO These assume a script engine is an extension point; is that valid?
     static const std::string& getNamespace();
     static const std::string& getExtensionPointName();
     /// @}

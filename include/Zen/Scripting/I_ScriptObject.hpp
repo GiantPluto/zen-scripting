@@ -26,7 +26,7 @@ class SCRIPTING_DLL_LINK I_ScriptObject
 public:
     typedef std::shared_ptr<I_ScriptObject>         pScriptObject_type;
     typedef std::weak_ptr<I_ScriptObject>           wpScriptObject_type;
-    typedef Zen::Event::Event<wpScriptObject_type>  scriptObjectEvent_type;
+    // typedef Zen::Event::Event<wpScriptObject_type>  scriptObjectEvent_type;
     /// @}
 
     /// @name I_ScriptObject interface
@@ -37,7 +37,7 @@ public:
     /// @name Events
     /// @{
 public:
-    scriptObjectEvent_type  onDestroyEvent;
+    // scriptObjectEvent_type  onDestroyEvent;
     /// @}
 
     /// @name 'Structors

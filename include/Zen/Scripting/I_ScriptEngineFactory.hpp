@@ -12,6 +12,7 @@
 #include <Zen/Plugin/I_ClassFactory.hpp>
 
 #include <map>
+#include <memory>
 #include <string>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
@@ -26,8 +27,8 @@ class SCRIPTING_DLL_LINK I_ScriptEngineFactory
     /// @name Types
     /// @{
 public:
-    typedef std::shared_ptr<I_ScriptEngine>        pScriptEngine_type;
-    typedef std::weak_ptr<I_ScriptEngine>   wpScriptEngine_type;
+    typedef std::shared_ptr<I_ScriptEngine>         pScriptEngine_type;
+    typedef std::weak_ptr<I_ScriptEngine>           wpScriptEngine_type;
     /// @}
 
     /// @name I_ScriptEngineFactory interface

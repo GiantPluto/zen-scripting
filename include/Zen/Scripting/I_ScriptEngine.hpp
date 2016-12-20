@@ -14,6 +14,7 @@
 
 #include <boost/any.hpp>
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -30,22 +31,31 @@ class SCRIPTING_DLL_LINK I_ScriptEngine
     /// @name Types
     /// @{
 public:
-    typedef std::string                            index_type;
-    typedef std::shared_ptr<I_ScriptEngine>        pScriptEngine_type;
-    typedef std::weak_ptr<I_ScriptEngine>          wpScriptEngine_type;
+    /// Required?  I think this has something to do with being an extension point.
+    typedef std::string                             index_type;
+    typedef std::shared_ptr<I_ScriptEngine>         pScriptEngine_type;
+    typedef std::weak_ptr<I_ScriptEngine>           wpScriptEngine_type;
     // typedef Zen::Event::Event<wpScriptEngine_type> scriptEngineEvent_type;
+    
+    // TODO This should be I_Configuration
+    typedef std::map<std::string, std::string>      Configuration_type;
+    typedef Configuration_type*                     pConfiguration_type;        
 
-    typedef std::shared_ptr<I_ScriptModule>        pScriptModule_type;
+    typedef std::shared_ptr<I_ScriptModule>         pScriptModule_type;
     /// @}
 
     /// @name I_ScriptEngine interface
     /// @{
 public:
+    /// Initialize the script engine
+    /// @since 2.0
+    virtual void initialize(pConfiguration_type _pConfiguration = nullptr) = 0;
+    
     /// TODO Why is this here?  How is it used?
     virtual I_ObjectHeap& heap() = 0;
 
     /// Execute a script
-    /// @return true if the script was sucesfully executed, otherwise false
+    /// @return true if the script was successfully executed, otherwise false
     virtual bool executeScript(const std::string& _fileName) = 0;
 
     /// Execute a method on an object

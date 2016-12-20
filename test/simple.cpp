@@ -22,6 +22,11 @@ class MockScriptEngine
 :   public Zen::Scripting::I_ScriptEngine
 {
 public:
+    virtual void initialize(pConfiguration_type _pConfiguration = nullptr)
+    {
+        
+    }
+
     virtual Zen::Scripting::I_ObjectHeap& heap()
     {
         

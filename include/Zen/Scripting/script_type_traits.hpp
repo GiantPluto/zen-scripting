@@ -6,8 +6,9 @@
 #ifndef ZEN_SCRIPTING_SCRIPT_TYPE_TRAITS_HPP_INCLUDED
 #define ZEN_SCRIPTING_SCRIPT_TYPE_TRAITS_HPP_INCLUDED
 
-#include <boost/type_traits/remove_reference.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
+// #include <boost/type_traits/remove_reference.hpp>
+// #include <boost/type_traits/remove_pointer.hpp>
+#include <boost/type_traits.hpp>
 
 #include <boost/any.hpp>
 

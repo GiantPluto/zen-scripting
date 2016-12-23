@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE( simple_script_example )
     std::shared_ptr<Zen::Scripting::I_ScriptEngine> pEngine(new MockScriptEngine());
 
     auto pModule = new Zen::Scripting::script_module(pEngine, "Simple", "Simple Script Module");
-    
+
     pModule->addType<MockConsole>("Console", "Console")
         .addMethod("print", &MockConsole::print)
     ;

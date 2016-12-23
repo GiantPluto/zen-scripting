@@ -22,6 +22,14 @@ class I_ScriptType;
 
 /// This class was I_ObjectReference in Zen Script 1.x
 /// Helper for mapping C++ objects to the I_ScriptObject
+
+/// The script wrapper provides a facade for any C++ object (generally of a class
+/// that implements I_ScriptObject); the goal is to not require this interface,
+/// but for now I believe we must.
+///
+/// I_ScriptWrapper allows a C++ object to be used as a payload associated with 
+/// a script object and then methods intercepted by the scripting engine can be 
+/// directed to the C++ object.
 class SCRIPTING_DLL_LINK I_ScriptWrapper
 {
     /// @name Types
